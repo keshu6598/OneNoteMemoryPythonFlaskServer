@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/b13f6e19-ab2f-4c13-8fc3-deca499816e7/AppServices/subscriptions/b13f6e19-ab2f-4c13-8fc3-deca499816e7/resourceGroups/OneNoteMemoryPythonResourceGroup/providers/Microsoft.Web/sites/OneNoteMemoryPythonWebApp",
+    "appService.deploySubpath": "."
+}
