@@ -1,7 +1,7 @@
 import os
 import openai
 
-openai.api_key = "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"
+openai.api_key = "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"
 
 
 from datetime import datetime
@@ -39,18 +39,27 @@ def rephrase():
     }
     return jsonify(data)
 
-@app.route('/hello', methods=['POST'])
+@app.route('/image', methods=['POST'])
 def hello():
-   name = request.form.get('name')
+    request_body = request.get_json()
+    prompt = request_body['text']
+    response = openai.Image.create(prompt=prompt, n=1, size="512x512")
+    image_url = response['data'][0]['url']
+    data = {
+        "imageUrl" : image_url
+    }
+    return jsonify(data)
 
-   if name:
-       print('Request for hello page received with name=%s' % name)
-       return render_template('hello.html', name = name)
-   else:
-       print('Request for hello page received with no name or blank name -- redirecting')
-       return redirect(url_for('index'))
+# @app.route('/hello', methods=['POST'])
+# def hello():
+#    name = request.form.get('name')
 
-
+#    if name:
+#        print('Request for hello page received with name=%s' % name)
+#        return render_template('hello.html', name = name)
+#    else:
+#        print('Request for hello page received with no name or blank name -- redirecting')
+#        return redirect(url_for('index'))
 
 if __name__ == '__main__':
    app.run()
