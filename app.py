@@ -39,10 +39,16 @@ def rephrase():
     }
     return jsonify(data)
 
-@app.route('/openOneNoteApp')
-def openOneNoteApp():
-    redirect_url = request.args.get('ClientUrl')
-    return redirect(redirect_url, code=302)
+@app.route('/image', methods=['POST'])
+def hello():
+    request_body = request.get_json()
+    prompt = request_body['text']
+    response = openai.Image.create(prompt=prompt, n=1, size="512x512")
+    image_url = response['data'][0]['url']
+    data = {
+        "imageUrl" : image_url
+    }
+    return jsonify(data)
 
 @app.route('/hello', methods=['POST'])
 def hello():
@@ -54,8 +60,6 @@ def hello():
    else:
        print('Request for hello page received with no name or blank name -- redirecting')
        return redirect(url_for('index'))
-
-
 
 if __name__ == '__main__':
    app.run()
