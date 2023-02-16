@@ -4,7 +4,6 @@ openai.api_key = "<api-key>"
 import requests
 import base64
 from requests_toolbelt.multipart import decoder
-openai.api_key = "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"
 
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, jsonify
