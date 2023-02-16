@@ -1,7 +1,7 @@
 import os
 import openai
 
-openai.api_key = "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"
+openai.api_key = "<api-key>"
 
 
 from datetime import datetime
@@ -38,6 +38,11 @@ def rephrase():
         "rephraseText" : response,
     }
     return jsonify(data)
+
+@app.route('/openOneNoteApp')
+def openOneNoteApp():
+    redirect_url = request.args.get('ClientUrl')
+    return redirect(redirect_url, code=302)
 
 @app.route('/hello', methods=['POST'])
 def hello():
