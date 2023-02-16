@@ -1,8 +1,10 @@
 import os
 import openai
-
 openai.api_key = "<api-key>"
-
+import requests
+import base64
+from requests_toolbelt.multipart import decoder
+openai.api_key = "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"
 
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, jsonify
@@ -40,13 +42,39 @@ def rephrase():
     return jsonify(data)
 
 @app.route('/image', methods=['POST'])
-def hello():
+def image():
     request_body = request.get_json()
     prompt = request_body['text']
     response = openai.Image.create(prompt=prompt, n=1, size="512x512")
     image_url = response['data'][0]['url']
     data = {
         "imageUrl" : image_url
+    }
+    return jsonify(data)
+
+@app.route('/design', methods=['POST'])
+def design():
+    request_body = request.get_json()
+    prompt = request_body['prompt']
+    url = "https://pptsgs.edog.officeapps.live.com/pptsgs/suggestions.ashx"
+    headers = {"Content-Type": "application/json"}
+    designerRequest = {"Title": {"Text":""},
+        "Expectations": {"Dimension":{"Width":1600, "Height":900}},
+        "Hints":{"Trigger":"DesignFromScratch","EnableGetty3PImages":"true",
+            "EnableGetty3PVideos":"true","image2HeadingsForDFS":"true",
+            "DesignQuery":prompt,"HasDalleImage":"false",
+            "AllImagesAreDalleImages":"false"}
+        }
+    response = requests.post(url, json=designerRequest, headers=headers)
+    multipart_data = decoder.MultipartDecoder.from_response(response)
+    base64Images = []
+    for part in multipart_data.parts:
+        nested_multipart_data = decoder.MultipartDecoder(part.content,part.headers['Content-Type'.encode()].decode())
+        base64Str = str(base64.b64encode(nested_multipart_data.parts[1].content),'utf-8')
+        base64Images.append(base64Str)
+    data = {
+        "success" : True,
+        "images" : base64Images
     }
     return jsonify(data)
 
