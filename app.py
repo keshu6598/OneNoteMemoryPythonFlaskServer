@@ -69,7 +69,7 @@ def design():
     base64Images = []
     for part in multipart_data.parts:
         nested_multipart_data = decoder.MultipartDecoder(part.content,part.headers['Content-Type'.encode()].decode())
-        base64Str = str(base64.b64encode(nested_multipart_data.parts[1].content),'utf-8')
+        base64Str = "data:image/jpeg;base64,"+str(base64.b64encode(nested_multipart_data.parts[1].content),'utf-8')
         base64Images.append(base64Str)
     data = {
         "success" : True,
