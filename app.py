@@ -4,11 +4,14 @@ openai.api_key = "<api-key>"
 import requests
 import base64
 from requests_toolbelt.multipart import decoder
+import uuid
+import io
 
 from datetime import datetime
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory, jsonify
+from flask import Flask, make_response, render_template, request, redirect, url_for, send_from_directory, jsonify
 app = Flask(__name__)
 
+MEMORY = {}
 
 @app.route('/')
 def index():
@@ -50,6 +53,40 @@ def image():
         "imageUrl" : image_url
     }
     return jsonify(data)
+
+@app.route('/setImage', methods=['POST'])
+def setImage():
+    request_body = request.get_json()
+    imageId = 'murtuza' 
+    # str(uuid.uuid4())
+    imageBase64 = request_body['base64']
+    MEMORY[imageId] = imageBase64
+    return jsonify({"RESPONSE: ": "OK", "uuid": imageId})
+
+@app.route('/getImage/<imageuuid>')
+def getImage(imageuuid):
+    binary_image_data = io.BytesIO(base64.decodebytes(MEMORY.get(imageuuid)))
+    response = make_response(binary_image_data)
+    print("Response: ", MEMORY.get(imageuuid))
+    response.headers.set('Content-Length', str(len(MEMORY[imageuuid])))
+    response.headers.set('Content-Type', 'image/jpeg')
+    print("Response: ", MEMORY.get(imageuuid))
+    return response
+
+@app.route('/getEmbeddings', methods=['POST'])
+def getEmbeddings():
+    request_body = request.get_json()
+    getEmbedding_text = request_body['text']
+    embedding = openai.Embedding.create(
+    input=getEmbedding_text, model="text-embedding-ada-002")["data"][0]["embedding"]
+    data = {
+        "embedding" : embedding,
+        "length" : len(embedding)
+    }
+    response = make_response(data)
+    response.headers.set('Content-Type', 'application/json')
+    return response
+
 
 @app.route('/design', methods=['POST'])
 def design():
