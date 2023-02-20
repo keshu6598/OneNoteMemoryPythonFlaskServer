@@ -58,7 +58,7 @@ def design():
     url = "https://pptsgs.edog.officeapps.live.com/pptsgs/suggestions.ashx"
     headers = {"Content-Type": "application/json"}
     designerRequest = {"Title": {"Text":""},
-        "Expectations": {"Dimension":{"Width":1600, "Height":900}},
+        "Expectations": {"Dimension":{"Width":900, "Height":1600}},
         "Hints":{"Trigger":"DesignFromScratch","EnableGetty3PImages":"true",
             "EnableGetty3PVideos":"true","image2HeadingsForDFS":"true",
             "DesignQuery":prompt,"HasDalleImage":"false",
