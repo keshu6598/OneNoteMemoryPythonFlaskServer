@@ -40,6 +40,26 @@ def rephrase():
     }
     return jsonify(data)
 
+@app.route('/askChatGPT', methods=['POST'])
+def askChatGPT():
+    request_body = request.get_json()
+    rephrase_text = request_body['text']
+    prompt_text = rephrase_text
+    response = openai.Completion.create(
+    model="text-davinci-003",
+    prompt=prompt_text,
+    temperature=0.7,
+    max_tokens=256,
+    top_p=1,
+    frequency_penalty=0,
+    presence_penalty=0
+    )
+    print('Response from OpenAI: ', response)
+    data = {
+        "rephraseText" : response,
+    }
+    return jsonify(data)
+
 @app.route('/image', methods=['POST'])
 def image():
     request_body = request.get_json()
