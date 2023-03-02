@@ -75,22 +75,53 @@ def image():
 def design():
     request_body = request.get_json()
     prompt = request_body['prompt']
-    url = "https://pptsgs.edog.officeapps.live.com/pptsgs/suggestions.ashx"
-    headers = {"Content-Type": "application/json"}
-    designerRequest = {"Title": {"Text":""},
-        "Expectations": {"Dimension":{"Width":900, "Height":1600}},
-        "Hints":{"Trigger":"DesignFromScratch","EnableGetty3PImages":"true",
-            "EnableGetty3PVideos":"true","image2HeadingsForDFS":"true",
-            "DesignQuery":prompt,"HasDalleImage":"false",
-            "AllImagesAreDalleImages":"false"}
+    url = "https://designerapp.edog.officeapps.live.com/designerapp/suggestions.ashx"
+    headers = {"Content-Type": "application/json", "caller": "DesignerApp"}
+    designerRequest = {
+        "ImageFiles": [],
+        "Title": {
+            "Text": ""
+        },
+        "SubTitle": {
+            "Text": ""
+        },
+        "Expectations": {
+            "Dimension": {
+                "Width": 1080,
+                "Height": 1080
+            },
+            "ExcludeDesignMetadata": [],
+            "MaxCount": 10,
+            "MinCount": 3,
+            "TypeMetadata": [
+                "png",
+                "bmp",
+                "jpg",
+                "oxsd"
+            ],
+            "IsBrandKit": "false"
+        },
+        "Hints": {
+            "Trigger": "DesignFromScratch",
+            "EnableGetty3PImages": "true",
+            "EnableGetty3PVideos": "true",
+            "image2HeadingsForDFS": "true",
+            "DesignQuery": prompt,
+            "AllSizes": "true",
+            "HasDalleImage": "false",
+            "AllImagesAreDalleImages": "false"
         }
+    }
     response = requests.post(url, json=designerRequest, headers=headers)
     multipart_data = decoder.MultipartDecoder.from_response(response)
     base64Images = []
     for part in multipart_data.parts:
-        nested_multipart_data = decoder.MultipartDecoder(part.content,part.headers['Content-Type'.encode()].decode())
-        base64Str = "data:image/jpeg;base64,"+str(base64.b64encode(nested_multipart_data.parts[1].content),'utf-8')
-        base64Images.append(base64Str)
+        try:
+            nested_multipart_data = decoder.MultipartDecoder(part.content,part.headers['Content-Type'.encode()].decode())
+            base64Str = "data:image/jpeg;base64,"+str(base64.b64encode(nested_multipart_data.parts[1].content),'utf-8')
+            base64Images.append(base64Str)
+        except:
+            pass
     data = {
         "success" : True,
         "images" : base64Images
