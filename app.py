@@ -107,7 +107,7 @@ def design():
             "EnableGetty3PVideos": "true",
             "image2HeadingsForDFS": "true",
             "DesignQuery": prompt,
-            "AllSizes": "true",
+            "AllSizes": "false",
             "HasDalleImage": "false",
             "AllImagesAreDalleImages": "false"
         }
