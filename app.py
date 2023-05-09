@@ -1,7 +1,7 @@
 import os
 import openai
-from openai.embeddings_utils import get_embedding, cosine_similarity
-openai.api_key = "token"
+# from openai.embeddings_utils import get_embedding, cosine_similarity
+openai.api_key = "OPENAI_TOKEN"
 import requests
 import base64
 from requests_toolbelt.multipart import decoder
@@ -21,14 +21,14 @@ def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
-@app.route('/getEmbedding', methods=['POST'])
-def getEmbedding():
-    request_body = request.get_json()
-    text = request_body['text']
-    return jsonify(get_embedding(
-        text,
-        engine="text-embedding-ada-002"
-    ))
+# @app.route('/getEmbedding', methods=['POST'])
+# def getEmbedding():
+#     request_body = request.get_json()
+#     text = request_body['text']
+#     return jsonify(get_embedding(
+#         text,
+#         engine="text-embedding-ada-002"
+    # ))
 
 @app.route('/rephrase', methods=['POST'])
 def rephrase():
